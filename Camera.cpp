@@ -8,8 +8,8 @@
 Camera::Camera(Vector3f lookFrom, Vector3f lookAt, Vector3f viewUp, float fieldOfView, float aspect, float aperture, float focusDistance)
 {
 	lensRadius = aperture / 2;
-	float theta = fieldOfView * M_PI / 180;
-	float halfHeight = tan(theta / 2);
+	float fieldOfViewInRadians = fieldOfView * M_PI / 180;
+	float halfHeight = tan(fieldOfViewInRadians / 2);
 	float halfWidth = aspect * halfHeight;
 
 	origin = lookFrom;
