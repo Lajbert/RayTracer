@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Camera.cpp" />
+    <ClCompile Include="..\..\CheckerTexture.cpp" />
     <ClCompile Include="..\..\Dialectric.cpp" />
     <ClCompile Include="..\..\Lambert.cpp" />
     <ClCompile Include="..\..\main.cpp" />
@@ -121,10 +122,13 @@
     <ClCompile Include="..\..\PhysicalObjectList.cpp" />
     <ClCompile Include="..\..\Ray.cpp" />
     <ClCompile Include="..\..\Sphere.cpp" />
+    <ClCompile Include="..\..\Texture.cpp" />
+    <ClCompile Include="..\..\UniformColorTexture.cpp" />
     <ClCompile Include="..\..\Vector3f.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Camera.h" />
+    <ClInclude Include="..\..\CheckerTexture.h" />
     <ClInclude Include="..\..\Dialectric.h" />
     <ClInclude Include="..\..\Lambert.h" />
     <ClInclude Include="..\..\main.h" />
@@ -135,6 +139,8 @@
     <ClInclude Include="..\..\PhysicalObjectList.h" />
     <ClInclude Include="..\..\Ray.h" />
     <ClInclude Include="..\..\Sphere.h" />
+    <ClInclude Include="..\..\Texture.h" />
+    <ClInclude Include="..\..\UniformColorTexture.h" />
     <ClInclude Include="..\..\Vector3f.h" />
   </ItemGroup>
   <ItemGroup>

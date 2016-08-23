@@ -5,6 +5,6 @@ bool Lambert::Scatter(const Ray& incomingRay, const HitData& hitData, Vector3f& 
 {
 	Vector3f target = hitData.hitPoint + hitData.normal + MathUtils::RandomInUnitSphere();
 	scattered = Ray(hitData.hitPoint, target - hitData.hitPoint);
-	attenuation = albedo;
+	attenuation = texture->Value(0, 0, hitData.hitPoint);
 	return true;
 }

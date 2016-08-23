@@ -4,6 +4,8 @@
 #include "Lambert.h"
 #include "Metal.h"
 #include "Dialectric.h"
+#include "CheckerTexture.h"
+#include "UniformColorTexture.h"
 
 PhysicalObjectList::PhysicalObjectList(PhysicalObject ** list, int size)
 {
@@ -32,7 +34,8 @@ PhysicalObject * PhysicalObjectList::RandomScene()
 {
 	int n = 500;
 	PhysicalObject** list = new PhysicalObject*[n + 1];
-	list[0] = new Sphere(Vector3f(0, -1000, 0), 1000, new Lambert(Vector3f(0.5, 0.5, 0.5)));
+	Texture* checker = new CheckerTexture(new UniformColorTexture(Vector3f(0, 0, 0)), new UniformColorTexture(Vector3f(1, 1, 1)));
+	list[0] = new Sphere(Vector3f(0, -1000, 0), 1000, new Lambert(checker));
 	int i = 1;
 	for (int a = -11; a < 11; a++) {
 		for (int b = -11; b < 11; b++) {
@@ -40,7 +43,7 @@ PhysicalObject * PhysicalObjectList::RandomScene()
 			Vector3f center(a + 0.9 * MathUtils::GetRandom(), 0.2, b + 0.9 * MathUtils::GetRandom());
 			if ((center - Vector3f(4, 0.2, 0)).GetLength() > 0.9) {
 				if (chooseMat < 0.8) { // diffuses
-					list[i++] = new Sphere(center, 0.2, new Lambert(Vector3f(MathUtils::GetRandom() * MathUtils::GetRandom(), MathUtils::GetRandom() * MathUtils::GetRandom(), MathUtils::GetRandom() * MathUtils::GetRandom())));
+					list[i++] = new Sphere(center, 0.2, new Lambert(new UniformColorTexture(Vector3f(MathUtils::GetRandom() * MathUtils::GetRandom(), MathUtils::GetRandom() * MathUtils::GetRandom(), MathUtils::GetRandom() * MathUtils::GetRandom()))));
 				}
 				else if (chooseMat < 0.95) { // metal
 					list[i++] = new Sphere(center, 0.2, new Metal(Vector3f(0.5 * (1 + MathUtils::GetRandom()), 0.5 * (1 + MathUtils::GetRandom()), 0.5 * (1 + MathUtils::GetRandom())), 0.5 * MathUtils::GetRandom()));
@@ -56,7 +59,7 @@ PhysicalObject * PhysicalObjectList::RandomScene()
 		}
 	}
 	list[i++] = new Sphere(Vector3f(0, 1, 0), 1.0, new Dialectric(1.5));
-	list[i++] = new Sphere(Vector3f(-4, 1, 0), 1.0, new Lambert(Vector3f(0.4, 0.2, 0.1)));
+	list[i++] = new Sphere(Vector3f(-4, 1, 0), 1.0, new Lambert(new UniformColorTexture(Vector3f(0.4, 0.2, 0.1))));
 	list[i++] = new Sphere(Vector3f(4, 1, 0), 1.0, new Metal(Vector3f(0.7, 0.6, 0.5), 0.0));
 
 	return new PhysicalObjectList(list, i);
@@ -65,8 +68,8 @@ PhysicalObject * PhysicalObjectList::RandomScene()
 PhysicalObject * PhysicalObjectList::SmallScene()
 {
 	PhysicalObject** objects = new PhysicalObject*[5];
-	objects[0] = new Sphere(Vector3f(0, 0, -1), 0.5, new Lambert(Vector3f(0.8, 0.3, 0.3)));
-	objects[1] = new Sphere(Vector3f(0, -100.5, -1), 100, new Lambert(Vector3f(0.8, 0.8, 0.0)));
+	objects[0] = new Sphere(Vector3f(0, 0, -1), 0.5, new Lambert(new UniformColorTexture(Vector3f(0.8, 0.3, 0.3))));
+	objects[1] = new Sphere(Vector3f(0, -100.5, -1), 100, new Lambert(new UniformColorTexture(Vector3f(0.8, 0.8, 0.0))));
 	objects[2] = new Sphere(Vector3f(1, 0, -1), 0.5, new Metal(Vector3f(0.8, 0.6, 0.2), 0.1));
 	Vector3f glassColor = Vector3f(MathUtils::GetRandom(), MathUtils::GetRandom(), MathUtils::GetRandom());
 	objects[3] = new Sphere(Vector3f(-1, 0, -1), 0.5, new Dialectric(1.5, glassColor));

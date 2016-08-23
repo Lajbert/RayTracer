@@ -19,10 +19,10 @@ const int IMAGE_WIDTH = 1000;
 const int IMAGE_HEIGHT = 500;
 
 // More samples mean less noise and more accurate image. Increases render time approximately linearly.
-const int NUMBER_OF_SAMPLES = 100;
+const int NUMBER_OF_SAMPLES = 5;
 
 // The number of logical CPU cores = number of parallel threads
-const int CPU_CORES = 4;
+const int CPU_CORES = 8;
 
 // The maximum number of bounces that a light ray can have before absorbing. The effect on the render time heavily depends on the scene complexity and setup.
 const int MAX_LIGHT_BOUNCES = 50;

@@ -3,13 +3,14 @@
 #define LAMBERTH
 
 #include "Material.h"
+#include "Texture.h"
 
 class Lambert : public Material
 {
 private:
-	Vector3f albedo;
+	Texture* texture;
 public:
-	Lambert(const Vector3f& albedo) : albedo(albedo) {}
+	Lambert(Texture* texture) : texture(texture) {}
 	virtual bool Scatter(const Ray& incomingRay, const HitData& hitData, Vector3f& attenuation, Ray& scattered) const override;
 };
 
