@@ -5,8 +5,10 @@
 
 #include "MathUtils.h"
 
-Camera::Camera(Vector3f lookFrom, Vector3f lookAt, Vector3f viewUp, float fieldOfView, float aspect, float aperture, float focusDistance)
+Camera::Camera(Vector3f lookFrom, Vector3f lookAt, Vector3f viewUp, float fieldOfView, float aspect, float aperture, float focusDistance, float shutterOpen, float shutterClose)
 {
+	this->shutterOpen = shutterOpen;
+	this->shutterClose = shutterClose;
 	lensRadius = aperture / 2;
 	float fieldOfViewInRadians = fieldOfView * M_PI / 180;
 	float halfHeight = tan(fieldOfViewInRadians / 2);
@@ -28,7 +30,8 @@ Ray Camera::GetRay(float s, float t)
 {
 	Vector3f random = lensRadius *  RandomInUnitDisk();
 	Vector3f offset = u * random.x() + v * random.y();
-	return Ray(origin + offset, lowerLeftCorner + s * horizontal + t * vertical - origin - offset);
+	float time = shutterOpen + MathUtils::GetRandom() * (shutterClose - shutterOpen);
+	return Ray(origin + offset, lowerLeftCorner + s * horizontal + t * vertical - origin - offset, time);
 }
 
 Vector3f Camera::RandomInUnitDisk()

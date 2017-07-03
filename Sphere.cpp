@@ -41,3 +41,9 @@ bool Sphere::Hit(const Ray & ray, float minTolerance, float maxTolerance, HitDat
 	return false;
 	
 }
+
+bool Sphere::BoundingBoxHit(float startTime, float endTime, BoundingBox & box) const
+{
+	box = BoundingBox(center - Vector3f(radius, radius, radius), center + Vector3f(radius, radius, radius));
+	return true;
+}

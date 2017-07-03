@@ -19,6 +19,10 @@ public:
 	static PhysicalObject *RandomScene();
 	/* Returns a small, static scene. */
 	static PhysicalObject *SmallScene();
+
+	static PhysicalObject *PerlinSpheres();
+
+	virtual bool BoundingBoxHit(float startTime, float endTime, BoundingBox & box) const override;
 };
 
 #endif

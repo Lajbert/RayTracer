@@ -2,6 +2,8 @@
 #ifndef MATHUTILSH
 #define MATHUTILSH
 #include "Vector3f.h"
+#include "BoundingBox.h"
+
 class MathUtils
 {
 public:
@@ -23,6 +25,18 @@ public:
 	*/
 	static inline float GetRandom() {
 		return ((float)rand() / RAND_MAX);
+	}
+
+	static inline BoundingBox GetSurroundingBox(BoundingBox box0, BoundingBox box1)
+	{
+		Vector3f small(fmin(box0.GetMin().x(), box1.GetMin().x()),
+			fmin(box0.GetMin().y(), box1.GetMin().y()),
+			fmin(box0.GetMin().z(), box1.GetMin().z()));
+		Vector3f big(fmax(box0.GetMax().x(), box1.GetMax().x()),
+			fmax(box0.GetMax().y(), box1.GetMax().y()),
+			fmax(box0.GetMax().z(), box1.GetMax().z()));
+
+		return BoundingBox(small, big);
 	}
 };
 

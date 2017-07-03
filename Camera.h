@@ -14,8 +14,11 @@ private:
 	Vector3f origin;
 	float lensRadius;
 	Vector3f u, v, w;
+	float shutterOpen;
+	float shutterClose;
+
 public:
-	Camera(Vector3f lookFrom, Vector3f lookAt, Vector3f viewUp, float fieldOfView, float aspect, float aperture, float focusDistance);
+	Camera(Vector3f lookFrom, Vector3f lookAt, Vector3f viewUp, float fieldOfView, float aspect, float aperture, float focusDistance, float shutterOpen, float shutterClose);
 	Ray GetRay(float u, float v);
 	Vector3f RandomInUnitDisk();
 };

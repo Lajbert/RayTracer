@@ -4,6 +4,7 @@
 
 #include "Ray.h"
 #include "Material.h"
+#include "BoundingBox.h"
 
 class Material;
 
@@ -18,6 +19,7 @@ class PhysicalObject
 {
 public:
 	virtual bool Hit(const Ray& ray, float minTolerance, float maxTolerance, HitData& data) const = 0;
+	virtual bool BoundingBoxHit(float startTime, float endTime, BoundingBox & box) const = 0;
 };
 
 #endif

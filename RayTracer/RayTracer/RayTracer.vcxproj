@@ -110,6 +110,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\BoundingBox.cpp" />
+    <ClCompile Include="..\..\BVHNode.cpp" />
     <ClCompile Include="..\..\Camera.cpp" />
     <ClCompile Include="..\..\CheckerTexture.cpp" />
     <ClCompile Include="..\..\Dialectric.cpp" />
@@ -118,6 +120,9 @@
     <ClCompile Include="..\..\Material.cpp" />
     <ClCompile Include="..\..\MathUtils.cpp" />
     <ClCompile Include="..\..\Metal.cpp" />
+    <ClCompile Include="..\..\MovingSphere.cpp" />
+    <ClCompile Include="..\..\NoiseTexture.cpp" />
+    <ClCompile Include="..\..\Perlin.cpp" />
     <ClCompile Include="..\..\PhysicalObject.cpp" />
     <ClCompile Include="..\..\PhysicalObjectList.cpp" />
     <ClCompile Include="..\..\Ray.cpp" />
@@ -127,6 +132,8 @@
     <ClCompile Include="..\..\Vector3f.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\BoundingBox.h" />
+    <ClInclude Include="..\..\BVHNode.h" />
     <ClInclude Include="..\..\Camera.h" />
     <ClInclude Include="..\..\CheckerTexture.h" />
     <ClInclude Include="..\..\Dialectric.h" />
@@ -135,6 +142,9 @@
     <ClInclude Include="..\..\Material.h" />
     <ClInclude Include="..\..\MathUtils.h" />
     <ClInclude Include="..\..\Metal.h" />
+    <ClInclude Include="..\..\MovingSphere.h" />
+    <ClInclude Include="..\..\NoiseTexture.h" />
+    <ClInclude Include="..\..\Perlin.h" />
     <ClInclude Include="..\..\PhysicalObject.h" />
     <ClInclude Include="..\..\PhysicalObjectList.h" />
     <ClInclude Include="..\..\Ray.h" />
