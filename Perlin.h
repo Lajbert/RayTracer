@@ -20,6 +20,8 @@ public:
 	float GenerateNoise(const Vector3f & p) const;
 	static Vector3f * PerlinGenerate();
 	static int* PerlinGeneratePerm();
+
+	float Turbulence(const Vector3f & p, int depth = 7) const;
 };
 
 #endif

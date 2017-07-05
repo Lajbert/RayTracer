@@ -25,7 +25,7 @@ const int IMAGE_HEIGHT = 250;
 const int ROW_SLICES = IMAGE_HEIGHT;
 
 // More samples mean less noise and more accurate image. Increases render time approximately linearly.
-const int NUMBER_OF_SAMPLES = 3;
+const int NUMBER_OF_SAMPLES = 50;
 
 // The number of logical CPU cores = number of parallel threads
 const int CPU_CORES = 8;
@@ -141,7 +141,7 @@ void RayTrace(PhysicalObject* scene, Camera camera) {
 			return;
 		}
 		std::thread::id this_id = std::this_thread::get_id();
-		cout << "Starting row " << row << " in thread " << this_id << "...\n";
+		//cout << "Starting row " << row << " in thread " << this_id << "...\n";
 		for (int j = 0; j < IMAGE_WIDTH; j++) { //each row is filled from left to right
 			Vector3f color(0, 0, 0);
 			for (int k = 0; k < NUMBER_OF_SAMPLES; k++) { // sending multiple rays to each pixel for sampling
@@ -164,7 +164,8 @@ void RayTrace(PhysicalObject* scene, Camera camera) {
 
 			image[row][j] = Vector3f(red, green, blue);
 		}
-		cout << "Row " << row << " in thread " << this_id << " finished!\n";
+		cout << 100 * (float)((float)row / (float)IMAGE_HEIGHT) << "%..." << endl;
+		//cout << "Row " << row << " in thread " << this_id << " finished!\n";
 	}
 }
 
@@ -414,7 +415,7 @@ int main() {
 	ofstream myfile;
 	myfile.open("image.ppm");
 
-	myfile << "P3\n" << IMAGE_WIDTH << " " << IMAGE_HEIGHT << "\n255\n";
+	myfile << "P3\n" << IMAGE_WIDTH << " " << IMAGE_HEIGHT -1 << "\n255\n";
 
 	// each RGB value will be printed to the file from the array.
 	for (int i = IMAGE_HEIGHT - 1; i > 0; i--) {
@@ -425,7 +426,9 @@ int main() {
 	}
 	myfile.close();
 
-	//getchar();
+	cout << "Finished writing file, press ENTER to exit...";
+
+	getchar();
 
 	return 0;
 }
