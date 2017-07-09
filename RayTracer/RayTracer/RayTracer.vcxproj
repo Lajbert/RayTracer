@@ -111,10 +111,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\BoundingBox.cpp" />
+    <ClCompile Include="..\..\Box.cpp" />
     <ClCompile Include="..\..\BVHNode.cpp" />
     <ClCompile Include="..\..\Camera.cpp" />
     <ClCompile Include="..\..\CheckerTexture.cpp" />
     <ClCompile Include="..\..\Dialectric.cpp" />
+    <ClCompile Include="..\..\DiffuseLight.cpp" />
     <ClCompile Include="..\..\Lambert.cpp" />
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\..\Material.cpp" />
@@ -122,21 +124,27 @@
     <ClCompile Include="..\..\Metal.cpp" />
     <ClCompile Include="..\..\MovingSphere.cpp" />
     <ClCompile Include="..\..\NoiseTexture.cpp" />
+    <ClCompile Include="..\..\NormalFlipper.cpp" />
     <ClCompile Include="..\..\Perlin.cpp" />
     <ClCompile Include="..\..\PhysicalObject.cpp" />
     <ClCompile Include="..\..\PhysicalObjectList.cpp" />
     <ClCompile Include="..\..\Ray.cpp" />
+    <ClCompile Include="..\..\Rectangle.cpp" />
     <ClCompile Include="..\..\Sphere.cpp" />
     <ClCompile Include="..\..\Texture.cpp" />
+    <ClCompile Include="..\..\Translate.cpp" />
     <ClCompile Include="..\..\UniformColorTexture.cpp" />
     <ClCompile Include="..\..\Vector3f.cpp" />
+    <ClCompile Include="..\..\Rotate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\BoundingBox.h" />
+    <ClInclude Include="..\..\Box.h" />
     <ClInclude Include="..\..\BVHNode.h" />
     <ClInclude Include="..\..\Camera.h" />
     <ClInclude Include="..\..\CheckerTexture.h" />
     <ClInclude Include="..\..\Dialectric.h" />
+    <ClInclude Include="..\..\DiffuseLight.h" />
     <ClInclude Include="..\..\Lambert.h" />
     <ClInclude Include="..\..\main.h" />
     <ClInclude Include="..\..\Material.h" />
@@ -144,14 +152,18 @@
     <ClInclude Include="..\..\Metal.h" />
     <ClInclude Include="..\..\MovingSphere.h" />
     <ClInclude Include="..\..\NoiseTexture.h" />
+    <ClInclude Include="..\..\NormalFlipper.h" />
     <ClInclude Include="..\..\Perlin.h" />
     <ClInclude Include="..\..\PhysicalObject.h" />
     <ClInclude Include="..\..\PhysicalObjectList.h" />
     <ClInclude Include="..\..\Ray.h" />
+    <ClInclude Include="..\..\Rectangle.h" />
     <ClInclude Include="..\..\Sphere.h" />
     <ClInclude Include="..\..\Texture.h" />
+    <ClInclude Include="..\..\Translate.h" />
     <ClInclude Include="..\..\UniformColorTexture.h" />
     <ClInclude Include="..\..\Vector3f.h" />
+    <ClInclude Include="..\..\Rotate.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\image.ppm" />

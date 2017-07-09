@@ -19,13 +19,13 @@ using namespace std;
 
 // increasing this will affect render time by n*m. That is a lot!
 const int IMAGE_WIDTH = 500;
-const int IMAGE_HEIGHT = 250;
+const int IMAGE_HEIGHT = 500;
 
 // every row is a work unit for the threads
 const int ROW_SLICES = IMAGE_HEIGHT;
 
 // More samples mean less noise and more accurate image. Increases render time approximately linearly.
-const int NUMBER_OF_SAMPLES = 50;
+const int NUMBER_OF_SAMPLES = 100;
 
 // The number of logical CPU cores = number of parallel threads
 const int CPU_CORES = 8;
@@ -43,13 +43,15 @@ Vector3f image[IMAGE_HEIGHT][IMAGE_WIDTH];
 // this contains the rows still left for processing
 int rowsToProcess[ROW_SLICES];
 
+bool LOG_PROGRESS = true;
+
 /*
  This returns the color of the pixel that the ray is sent to. It works recursively.
  First, we check if we hit anything in the scene. If we don't hit anything, we'll return the 
  color of the background. If we hit, the light ray can be absorbed, reflacted or refracted, depending on the material.
  Our light ray can be bounced at maximum MAX_LIGHT_BOUNCES times, after that we make it absorbed.
  In case of bouncing lights, we call this function recursively until we reach the bounce limit or the light is absorbed.
-*/
+
 Vector3f Color(const Ray& ray, PhysicalObject *scene, int depth)
 {
 	HitData hitData;
@@ -72,6 +74,30 @@ Vector3f Color(const Ray& ray, PhysicalObject *scene, int depth)
 	Vector3f white(1.0, 1.0, 1.0);
 	Vector3f blue(0.5, 0.7, 1.0);
 	return (1.0 - t) * white + t * blue;
+}
+*/
+
+Vector3f Color(const Ray& ray, PhysicalObject *scene, int depth)
+{
+	HitData hitData;
+	if (scene->Hit(ray, 0.001, FLT_MAX, hitData)) { // 0.001 to resolve shadow acne problem
+		Ray scattered;
+		Vector3f attenuation;
+		Vector3f emitted = hitData.material->GetEmitted(hitData.u, hitData.v, hitData.hitPoint);
+		// if the light ray is scattered, we co recursive
+		if (depth < MAX_LIGHT_BOUNCES && hitData.material->Scatter(ray, hitData, attenuation, scattered)) {
+			// recursive call for the next bounce, also adding the attenuation from the current bounce
+			return emitted + attenuation * Color(scattered, scene, depth + 1);
+		}
+		else {
+			return emitted;
+		}
+		 
+	}
+	else {
+		// light ray absorbed
+		return Vector3f(0, 0, 0);
+	}
 }
 
 /*
@@ -141,7 +167,6 @@ void RayTrace(PhysicalObject* scene, Camera camera) {
 			return;
 		}
 		std::thread::id this_id = std::this_thread::get_id();
-		//cout << "Starting row " << row << " in thread " << this_id << "...\n";
 		for (int j = 0; j < IMAGE_WIDTH; j++) { //each row is filled from left to right
 			Vector3f color(0, 0, 0);
 			for (int k = 0; k < NUMBER_OF_SAMPLES; k++) { // sending multiple rays to each pixel for sampling
@@ -164,7 +189,9 @@ void RayTrace(PhysicalObject* scene, Camera camera) {
 
 			image[row][j] = Vector3f(red, green, blue);
 		}
-		cout << 100 * (float)((float)row / (float)IMAGE_HEIGHT) << "%..." << endl;
+		if (LOG_PROGRESS) {
+			cout << 100 * (float)((float)row / (float)IMAGE_HEIGHT) << "%..." << endl;
+		}
 		//cout << "Row " << row << " in thread " << this_id << " finished!\n";
 	}
 }
@@ -197,175 +224,17 @@ void CreateRowSlices() {
 }
 
 
-/*
-int main_multiple_row(PhysicalObject* scene) {
-
-	//PhysicalObject* scene = PhysicalObjectList::RandomScene();
-	//PhysicalObject* scene = PhysicalObjectList::SmallScene();
-
-	// setting up the camera
-	//Vector3f lookFrom(-5, 1, -5);
-	Vector3f lookFrom(15, 2, 5);
-	Vector3f lookAt(0, 0, 0);
-	float distanceToFocus = (lookFrom - lookAt).GetLength();
-	float aperture = 0.1;
-	Camera camera(lookFrom, lookAt, Vector3f(0, 1, 0), 20, float(IMAGE_WIDTH) / float (IMAGE_HEIGHT), aperture, distanceToFocus, 0.0, 1.0);
-
-	SliceImageToCPUCores();
-	
-	cout << "Starting rendering...\n";
-
-	/* 
-	 We create an array as big as the number of CPU cores, each element will be a thread
-	 This is necessary, because in standard C++, threads start running automatically as soon as they are created
-	 and we need to keep store them to be able to call join() function on them on the next iteration.
-	 The following code wouldn't work:
-
-	 for (int i = CPU_CORES - 1; i >= 0; i--) {
-		// create the thread
-		thread t(RayTrace, imageSlices[i][0], imageSlices[i][1], scene, camera, i);
-
-		// and stop the execution of the main thread immediately with the join(), meaining that main thread (thus the for loop )
-		// will wait until the t finishes the execution and only then it will start the next thread, which will stop the main thread again...
-		// and it goes on, so the execution will only happen on one thread at a time sequentially without paralellism
-		t.join(); 
-	}
-	This is why we need to create and start all the threads first, and call the join() only after all of them are 
-	created and running the main thread will only stops execion when the rendering threads are running and won't start
-	writing the file untill all have retunred.
-	 *\/
-
-	// to keep of the threads
-	thread threads[CPU_CORES];
-	// creating the threads will make them run immediately, but we don't call .join() just yet to let the main thread execute untils
-	// all of the worker threads are created
-
-	clock_t begin = clock();
-	for (int i = CPU_CORES - 1; i >= 0; i--) {
-		threads[i] = thread(RayTrace_backup, imageSlices[i][0], imageSlices[i][1], 0, IMAGE_WIDTH, scene, camera, i);
-	}
-
-	// when all threads are created, we will call .join() on each of them so the main thread will until all finishes, so it won't start
-	// writing an unfinished image to the file
-	for (int i = CPU_CORES - 1; i >= 0; i--) {
-		threads[i].join();
-	}
-
-	clock_t end = clock();
-	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-
-	cout << "Rendering finished in " << elapsed_secs << " millis, writing file...\n";
-
-	// writing the image to a simple PPM file. The most simple image file format, just google it if you don't know.
-	ofstream myfile;
-	myfile.open("image.ppm");
-
-	myfile << "P3\n" << IMAGE_WIDTH << " " << IMAGE_HEIGHT << "\n255\n";
-	
-	// each RGB value will be printed to the file from the array.
-	for (int i = IMAGE_HEIGHT - 1; i > 0; i--) {
-		for (int j = 0; j < IMAGE_WIDTH; j++) {
-			Vector3f color = image[i][j]; // color of the pixel
-			myfile << color.r() << " " << color.g() << " " << color.b() << "\n";
-		}
-	}
-	myfile.close();
-
-	return 0;
-}
-*/
-
-int main_random() {
-
-	PhysicalObject* scene = PhysicalObjectList::RandomScene();
-	//PhysicalObject* scene = PhysicalObjectList::SmallScene();
-
-	// setting up the camera
-	//Vector3f lookFrom(-5, 1, -5);
-	Vector3f lookFrom(15, 2, 5);
-	Vector3f lookAt(0, 0, 0);
-	//float distanceToFocus = (lookFrom - lookAt).GetLength();
-	//float aperture = 0.1;
-	float distanceToFocus = 10;
-	float aperture = 0;
-	Camera camera(lookFrom, lookAt, Vector3f(0, 1, 0), 20, float(IMAGE_WIDTH) / float(IMAGE_HEIGHT), aperture, distanceToFocus, 0.0, 1.0);
-
-	CreateRowSlices();
-
-	cout << "Starting rendering...\n";
-
-	/*
-	We create an array as big as the number of CPU cores, each element will be a thread
-	This is necessary, because in standard C++, threads start running automatically as soon as they are created
-	and we need to keep store them to be able to call join() function on them on the next iteration.
-	The following code wouldn't work:
-
-	for (int i = CPU_CORES - 1; i >= 0; i--) {
-	// create the thread
-	thread t(RayTrace, imageSlices[i][0], imageSlices[i][1], scene, camera, i);
-
-	// and stop the execution of the main thread immediately with the join(), meaining that main thread (thus the for loop )
-	// will wait until the t finishes the execution and only then it will start the next thread, which will stop the main thread again...
-	// and it goes on, so the execution will only happen on one thread at a time sequentially without paralellism
-	t.join();
-	}
-	This is why we need to create and start all the threads first, and call the join() only after all of them are
-	created and running the main thread will only stops execion when the rendering threads are running and won't start
-	writing the file untill all have retunred.
-	*/
-
-	// to keep of the threads
-	thread threads[CPU_CORES];
-	// creating the threads will make them run immediately, but we don't call .join() just yet to let the main thread execute untils
-	// all of the worker threads are created
-	clock_t begin = clock();
-	for (int i = CPU_CORES - 1; i >= 0; i--) {
-		threads[i] = thread(RayTrace, scene, camera);
-	}
-
-	// when all threads are created, we will call .join() on each of them so the main thread will until all finishes, so it won't start
-	// writing an unfinished image to the file
-	for (int i = CPU_CORES - 1; i >= 0; i--) {
-		threads[i].join();
-	}
-
-	clock_t end = clock();
-	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-
-	cout << "Rendering finished in " << elapsed_secs << " millis, writing file...\n";
-
-	// writing the image to a simple PPM file. The most simple image file format, just google it if you don't know.
-	ofstream myfile;
-	myfile.open("image.ppm");
-
-	myfile << "P3\n" << IMAGE_WIDTH << " " << IMAGE_HEIGHT << "\n255\n";
-
-	// each RGB value will be printed to the file from the array.
-	for (int i = IMAGE_HEIGHT - 1; i > 0; i--) {
-		for (int j = 0; j < IMAGE_WIDTH; j++) {
-			Vector3f color = image[i][j]; // color of the pixel
-			myfile << color.r() << " " << color.g() << " " << color.b() << "\n";
-		}
-	}
-	myfile.close();
-
-	//getchar();
-
-	return 0;
-}
-
 int main() {
 
-	PhysicalObject* scene = PhysicalObjectList::PerlinSpheres();
-	//PhysicalObject* scene = PhysicalObjectList::SmallScene();
+	PhysicalObject* scene = PhysicalObjectList::CornellBox();
 
 	// setting up the camera
-	//Vector3f lookFrom(-5, 1, -5);
-	Vector3f lookFrom(13, 2, 3);
-	Vector3f lookAt(0, 0, 0);
+	Vector3f lookFrom(278, 278, -800);
+	Vector3f lookAt(278, 278, 0);
 	float distanceToFocus = 10;
 	float aperture = 0;
-	Camera camera(lookFrom, lookAt, Vector3f(0, 1, 0), 20, float(IMAGE_WIDTH) / float(IMAGE_HEIGHT), aperture, distanceToFocus, 0.0, 1.0);
+	float fieldOfView = 40;
+	Camera camera(lookFrom, lookAt, Vector3f(0, 1, 0), fieldOfView, float(IMAGE_WIDTH) / float(IMAGE_HEIGHT), aperture, distanceToFocus, 0.0, 1.0);
 
 	CreateRowSlices();
 
@@ -427,8 +296,6 @@ int main() {
 	myfile.close();
 
 	cout << "Finished writing file, press ENTER to exit...";
-
-	getchar();
 
 	return 0;
 }

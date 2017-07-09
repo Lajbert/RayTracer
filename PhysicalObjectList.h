@@ -22,6 +22,10 @@ public:
 
 	static PhysicalObject *PerlinSpheres();
 
+	static PhysicalObject * SimpleLight();
+	
+	static PhysicalObject * CornellBox();
+
 	virtual bool BoundingBoxHit(float startTime, float endTime, BoundingBox & box) const override;
 };
 

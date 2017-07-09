@@ -13,6 +13,10 @@ struct HitData{
 	Vector3f hitPoint;
 	Vector3f normal;
 	Material* material;
+
+	float u;
+	float v;
+
 };
 
 class PhysicalObject

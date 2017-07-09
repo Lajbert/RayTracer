@@ -9,6 +9,12 @@
 #include "MovingSphere.h"
 #include "BVHNode.h"
 #include "NoiseTexture.h"
+#include "DiffuseLight.h"
+#include "Rectangle.h"
+#include "NormalFlipper.h"
+#include "Box.h"
+#include "Translate.h"
+#include "Rotate.h"
 
 PhysicalObjectList::PhysicalObjectList(PhysicalObject ** list, int size)
 {
@@ -89,6 +95,36 @@ PhysicalObject * PhysicalObjectList::PerlinSpheres()
 	list[0] = new Sphere(Vector3f(0, -1000, 0), 1000, new Lambert(perlinTexture));
 	list[1] = new Sphere(Vector3f(0, 2, 0), 2, new Lambert(perlinTexture));
 	return new PhysicalObjectList(list, 2);
+}
+
+PhysicalObject * PhysicalObjectList::SimpleLight() {
+	Texture * perlinTexture = new NoiseTexture(4);
+	PhysicalObject ** list = new PhysicalObject*[4];
+	list[0] = new Sphere(Vector3f(0, -1000, 0), 1000, new Lambert(perlinTexture));
+	list[1] = new Sphere(Vector3f(0, 2, 0), 2, new Lambert(perlinTexture));
+	//list[2] = new Sphere(Vector3f(0, 7, 0), 2, new DiffuseLight(new ConstantTexture(Vector3f(4, 4, 4))));
+	list[2] = new Sphere(Vector3f(0, 7, 0), 2, new Lambert(perlinTexture));
+	list[3] = new XYRectangle(3, 5, 1, 3, -2, new DiffuseLight(new UniformColorTexture(Vector3f(4, 4, 4))));
+	return new PhysicalObjectList(list, 4);
+}
+
+PhysicalObject * PhysicalObjectList::CornellBox()
+{
+	PhysicalObject ** list = new PhysicalObject*[8];
+	int i = 0;
+	Material * red = new Lambert(new UniformColorTexture(Vector3f(0.65, 0.05, 0.05)));
+	Material * white = new Lambert(new UniformColorTexture(Vector3f(0.73, 0.73, 0.73)));
+	Material * green = new Lambert(new UniformColorTexture(Vector3f(0.12, 0.45, 0.15)));
+	Material * light = new DiffuseLight(new UniformColorTexture(Vector3f(15, 15, 15)));
+	list[i++] = new NormalFlipper(new YZRectangle(0, 555, 0, 555, 555, green));
+	list[i++] = new YZRectangle(0, 555, 0, 555, 0, red);
+	list[i++] = new XZRectangle(213, 343, 227, 332, 554.9, light);
+	list[i++] = new NormalFlipper(new XZRectangle(0, 555, 0, 555, 555, white));
+	list[i++] = new XZRectangle(0, 555, 0, 555, 0, white);
+	list[i++] = new NormalFlipper(new XYRectangle(0, 555, 0, 555, 555, white));
+	list[i++] = new Translate(new YRotate(new Box(Vector3f(0, 0, 0), Vector3f(165, 165, 165), white), -18), Vector3f(130, 0, 65));
+	list[i++] = new Translate(new YRotate(new Box(Vector3f(0, 0, 0), Vector3f(165, 330, 165), white), 15), Vector3f(265, 0, 295));
+	return new PhysicalObjectList(list, i);
 }
 
 bool PhysicalObjectList::BoundingBoxHit(float startTime, float endTime, BoundingBox & box) const
