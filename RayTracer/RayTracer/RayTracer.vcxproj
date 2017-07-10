@@ -172,6 +172,9 @@
     <None Include="..\..\image_25.ppm" />
     <None Include="..\..\image_50.ppm" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\cornell_box_1.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
