@@ -2,6 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <float.h>
 
 YRotate::YRotate(PhysicalObject * object, float angle)
 {

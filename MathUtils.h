@@ -38,6 +38,13 @@ public:
 
 		return BoundingBox(small, big);
 	}
+
+	static inline void GetSphereUV(const Vector3f & center, float & u, float & v) {
+		float phi = atan2(center.z(), center.x());
+		float theta = asin(center.y());
+		u = 1 - (phi + M_PI) / (2 * M_PI);
+		v = (theta + M_PI / 2) / M_PI;
+	}
 };
 
 #endif

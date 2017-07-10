@@ -25,10 +25,10 @@ const int IMAGE_HEIGHT = 500;
 const int ROW_SLICES = IMAGE_HEIGHT;
 
 // More samples mean less noise and more accurate image. Increases render time approximately linearly.
-const int NUMBER_OF_SAMPLES = 100;
+const int NUMBER_OF_SAMPLES = 50;
 
 // The number of logical CPU cores = number of parallel threads
-const int CPU_CORES = 8;
+const int CPU_CORES = 4;
 
 // The maximum number of bounces that a light ray can have before forced absorbing. The effect on the render time heavily depends on the scene complexity and setup.
 const int MAX_LIGHT_BOUNCES = 50;
@@ -278,11 +278,11 @@ int main() {
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
-	cout << "Rendering finished in " << elapsed_secs << " millis, writing file...\n";
+	cout << "Rendering finished in " << (elapsed_secs / 60) << " minutes, writing file...\n";
 
 	// writing the image to a simple PPM file. The most simple image file format, just google it if you don't know.
 	ofstream myfile;
-	myfile.open("image.ppm");
+	myfile.open("image_mac.ppm");
 
 	myfile << "P3\n" << IMAGE_WIDTH << " " << IMAGE_HEIGHT -1 << "\n255\n";
 

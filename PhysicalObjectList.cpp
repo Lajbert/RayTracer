@@ -115,7 +115,7 @@ PhysicalObject * PhysicalObjectList::CornellBox()
 	Material * red = new Lambert(new UniformColorTexture(Vector3f(0.65, 0.05, 0.05)));
 	Material * white = new Lambert(new UniformColorTexture(Vector3f(0.73, 0.73, 0.73)));
 	Material * green = new Lambert(new UniformColorTexture(Vector3f(0.12, 0.45, 0.15)));
-	Material * light = new DiffuseLight(new UniformColorTexture(Vector3f(15, 15, 15)));
+	Material * light = new DiffuseLight(new UniformColorTexture(Vector3f(16, 16, 16)));
 	list[i++] = new NormalFlipper(new YZRectangle(0, 555, 0, 555, 555, green));
 	list[i++] = new YZRectangle(0, 555, 0, 555, 0, red);
 	list[i++] = new XZRectangle(213, 343, 227, 332, 554.9, light);
