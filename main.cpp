@@ -28,7 +28,7 @@ const int ROW_SLICES = IMAGE_HEIGHT;
 const int NUMBER_OF_SAMPLES = 50;
 
 // The number of logical CPU cores = number of parallel threads
-const int CPU_CORES = 4;
+const int CPU_CORES = 8;
 
 // The maximum number of bounces that a light ray can have before forced absorbing. The effect on the render time heavily depends on the scene complexity and setup.
 const int MAX_LIGHT_BOUNCES = 50;
@@ -264,7 +264,7 @@ int main() {
 	thread threads[CPU_CORES];
 	// creating the threads will make them run immediately, but we don't call .join() just yet to let the main thread execute untils
 	// all of the worker threads are created
-	clock_t begin = clock();
+	//clock_t begin = clock();
 	for (int i = CPU_CORES - 1; i >= 0; i--) {
 		threads[i] = thread(RayTrace, scene, camera);
 	}
@@ -276,9 +276,9 @@ int main() {
 	}
 
 	clock_t end = clock();
-	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+	//double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
-	cout << "Rendering finished in " << (elapsed_secs / 60) << " minutes, writing file...\n";
+	//cout << "Rendering finished in " << (elapsed_secs) << " seconds, writing file...\n";
 
 	// writing the image to a simple PPM file. The most simple image file format, just google it if you don't know.
 	ofstream myfile;
